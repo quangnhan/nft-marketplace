@@ -1,0 +1,40 @@
+# Dependency directories
+node_modules/
+
+# Build directory
+build/
+
+# Coverage directory
+coverage/
+
+# Truffle artifacts
+*.json
+*.zip
+
+# Environment files
+.env
+
+# Compiled contracts
+contracts/.build/
+
+# Compiled migrations
+migrations/.migrate/
+
+# Truffle configuration file
+truffle-config.js
+
+# Cache directories
+.cache/
+.pnp/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS generated files
+.DS_Store
+Thumbs.db
