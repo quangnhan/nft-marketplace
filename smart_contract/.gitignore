@@ -8,7 +8,7 @@ build/
 coverage/
 
 # Truffle artifacts
-*.json
+# *.json
 *.zip
 
 # Environment files
