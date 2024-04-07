@@ -1,2 +1,6 @@
 django
 web3
+celery
+django-celery-beat
+django-celery-results
+python-dotenv

@@ -10,7 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
+from dotenv import load_dotenv
 from pathlib import Path
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    #3rd party
+    'django_celery_results',
+    'django_celery_beat',
+    
     #app
     'blockchain',
 ]
@@ -124,3 +132,26 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Celery Configuration Options
+CELERY_TIMEZONE = 'Asia/Ho_Chi_Minh'
+CELERY_RESULT_EXTENDED= True
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_TASK_TRACK_STARTED = True
+
+# RabbitMQ setting
+RABBITMQ_HOST = os.environ.get('RABBITMQ_HOST', default='localhost')
+RABBITMQ_PORT = 5672
+RABBITMQ_USERNAME = os.environ.get('RABBITMQ_USERNAME', default='guest')
+RABBITMQ_PASSWORD = os.environ.get('RABBITMQ_PASSWORD', default='guest')
+
+# Django celery result admin
+DJANGO_CELERY_RESULTS = {
+    'ALLOW_EDITS': True,
+} 
+
+# Celery settings
+CELERY_BROKER_URL = f'amqp://{RABBITMQ_USERNAME}:{RABBITMQ_PASSWORD}@{RABBITMQ_HOST}:{RABBITMQ_PORT}/'
+
+# Static root
+STATIC_ROOT = BASE_DIR / 'staticfiles'

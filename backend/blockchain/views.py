@@ -1,12 +1,17 @@
 import json
+import os
+from dotenv import load_dotenv
 from web3 import Web3
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import HttpResponse, get_object_or_404
 from .models import SmartContract, NFT
 
+load_dotenv()
+
 def get_latest_block_number(request):
-    w3 = Web3(Web3.HTTPProvider("https://silent-powerful-sunset.quiknode.pro/1b4b2ca8e8106b992d01400a71e0ba35810091e2/"))
+    http_provider = os.environ.get('BLOCKCHAIN_HTTP_PROVIDER')
+    w3 = Web3(Web3.HTTPProvider(http_provider))
 
     if not w3.is_connected():
         return HttpResponse("Failed to connect to the HTTP provider!")
@@ -15,7 +20,7 @@ def get_latest_block_number(request):
 
     return HttpResponse(f"Latest Block Number: {latest_block_number}")
 
-def save_nft_data(request):
+def save_nft_owner(request):
     try:
         # Get data
         smart_contract_address = request.GET.get("smart_contract_address", None)
@@ -27,7 +32,7 @@ def save_nft_data(request):
             "smart_contract_address": smart_contract_address,
             "from_token_id": from_token_id,
             "to_token_id": to_token_id
-        }.items() if not value]
+        }.items() if value == None]
 
         if missing_params:
             error_msg = f"Missing required parameter(s): {', '.join(missing_params)}."
@@ -43,7 +48,8 @@ def save_nft_data(request):
             abi = json.load(json_file)
 
         # Initialize Web3
-        w3 = Web3(Web3.HTTPProvider('https://silent-powerful-sunset.quiknode.pro/1b4b2ca8e8106b992d01400a71e0ba35810091e2/'))
+        http_provider = os.environ.get('BLOCKCHAIN_HTTP_PROVIDER')
+        w3 = Web3(Web3.HTTPProvider(http_provider))
         
         # Retrieve the contract instance
         contract = w3.eth.contract(address=smart_contract.address, abi=abi)
@@ -52,12 +58,18 @@ def save_nft_data(request):
             # Call the Ethereum contract function to get NFT owner
             owner = contract.functions.ownerOf(token_id).call()
 
-            # Save NFT data to the NFT table
-            nft = NFT.objects.create(
+            # Get existing NFT or create a new one if it doesn't exist
+            nft, created = NFT.objects.get_or_create(
                 smart_contract=smart_contract,
-                owner=owner,
-                token_id=token_id
+                token_id=token_id,
+                defaults={'owner': owner}
             )
+            print(f"Token id: {token_id} - Owner: {owner}")
+
+            # If the NFT already exists, update the owner
+            if not created:
+                nft.owner = owner
+                nft.save()
 
         return HttpResponse("NFT data saved successfully.")
     except Exception as e:
