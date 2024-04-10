@@ -1,45 +1,46 @@
 import json
 from django.db import models
 from django.core.exceptions import ValidationError
-
-class Chain(models.Model):
-    DEVNET = 'DEVNET'
-    TESTNET = 'TESTNET'
-    MAINNET = 'MAINNET'
-    NETWORK_CHOICES = [
-        (DEVNET, 'Development Network'),
-        (TESTNET, 'Test Network'),
-        (MAINNET, 'Main Network'),
-    ]
-
-    name = models.CharField(max_length=50)
-    symbol = models.CharField(max_length=10)
-    network = models.CharField(max_length=10, choices=NETWORK_CHOICES)
-
-    def __str__(self):
-        return f"{self.symbol} ({self.network})"
+from blockchain.blockchain_factory.chain_factory import ChainFactory
+from blockchain.blockchain_factory.enums.blockchain import Blockchain
+from blockchain.blockchain_factory.enums.network import Network
 
 class SmartContract(models.Model):
-    chain = models.ForeignKey(Chain, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
+    NETWORK_CHOICES = [(choice.name, choice.value) for choice in Network]
+    BLOCKCHAIN_CHOICES = [(choice.name, choice.value) for choice in Blockchain]
+
+    blockchain = models.CharField(max_length=50, choices=BLOCKCHAIN_CHOICES, default=Blockchain.ETHEREUM.value)
+    network = models.CharField(max_length=50, choices=NETWORK_CHOICES, default=Network.MAINNET.value)
+    name = models.CharField(max_length=50, default='')
+    token_symbol = models.CharField(max_length=50, default='')
     address = models.CharField(max_length=50, unique=True)
-    contract_abi_json = models.FileField(upload_to='static/smart_contract_abi', blank=True, null=True)
+    abi = models.JSONField()
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.blockchain}"
 
     def clean(self):
         super().clean()
-        # Access the uploaded file
-        contract_abi_file = self.contract_abi_json
-        if contract_abi_file:
-            try:
-                # Attempt to parse the file content as JSON
-                contract_abi_data = json.loads(contract_abi_file.read().decode('utf-8'))
-            except json.JSONDecodeError:
-                # If parsing fails, raise a validation error
-                raise ValidationError("The uploaded file is not in JSON format.")
-    
+        self.validate_abi()
+        self.validate_chain_and_network()
+
+    def validate_abi(self):
+        try:
+            json.loads(self.abi)
+        except json.JSONDecodeError as e:
+            raise ValidationError("ABI field must be a valid JSON string.")
+
+    def validate_chain_and_network(self):
+        try:
+            chain = ChainFactory.create(self.blockchain, self.network)
+        except Exception as e:
+            raise ValidationError(f"Failed to create chain instance: {e}")
+
+        # Get contract name and save to database
+        contract_name = chain.get_contract_name(self.address, self.abi)
+        if contract_name:
+            self.name = contract_name
+        
 class NFT(models.Model):
     smart_contract = models.ForeignKey(SmartContract, on_delete=models.CASCADE)
     owner = models.CharField(max_length=50)
@@ -48,3 +49,9 @@ class NFT(models.Model):
 
     class Meta:
         unique_together = (("smart_contract", "token_id"),)
+
+    def __str__(self):
+        if self.smart_contract.name:
+            return f"Contract: {self.smart_contract.name} - Token ID: {self.token_id}"
+        else:
+            return f"Contract: {self.smart_contract.address} - Token ID: {self.token_id}"

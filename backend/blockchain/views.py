@@ -43,16 +43,13 @@ def save_nft_owner(request):
 
         # Retrieve the SmartContract instance
         smart_contract = get_object_or_404(SmartContract, address=smart_contract_address)
-        file_path = f"{settings.BASE_DIR}/{smart_contract.contract_abi_json}"
-        with open(file_path, "r") as json_file:
-            abi = json.load(json_file)
 
         # Initialize Web3
         http_provider = os.environ.get('BLOCKCHAIN_HTTP_PROVIDER')
         w3 = Web3(Web3.HTTPProvider(http_provider))
         
         # Retrieve the contract instance
-        contract = w3.eth.contract(address=smart_contract.address, abi=abi)
+        contract = w3.eth.contract(address=smart_contract.address, abi=smart_contract.abi) # type: ignore
 
         for token_id in range(from_token_id, to_token_id):
             # Call the Ethereum contract function to get NFT owner

@@ -1,22 +1,24 @@
 from django.contrib import admin
-from .models import Chain, SmartContract, NFT
-
-# Define custom admin classes if needed
-class ChainAdmin(admin.ModelAdmin):
-    list_display = ('name', 'symbol', 'network')
+from .models import SmartContract, NFT
 
 class SmartContractAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'chain', 'address')
+    list_display = ('id', 'name', 'blockchain', 'network', 'address')
+    readonly_fields = ['name']
 
 class NFTAdmin(admin.ModelAdmin):
-    list_display = ('smart_contract', 'owner', 'token_id', 'image_url')
+    list_display = ('token_id', 'contract', 'owner', 'image_url')
+
+    def contract(self, obj):
+        if obj.smart_contract.name:
+            return obj.smart_contract.name
+        else:
+            obj.smart_contract.address
 
 # Register your models with the admin site
-admin.site.register(Chain, ChainAdmin)
 admin.site.register(SmartContract, SmartContractAdmin)
 admin.site.register(NFT, NFTAdmin)
 
 # Django admin
 admin.site.site_header = "Admin"
 admin.site.site_title = "Admin Portal"
-admin.site.index_title = "Welcome"
+admin.site.index_title = "Welcome Admin Portal"
