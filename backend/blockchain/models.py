@@ -15,6 +15,7 @@ class SmartContract(models.Model):
     token_symbol = models.CharField(max_length=50, default='')
     address = models.CharField(max_length=50, unique=True)
     abi = models.JSONField()
+    image_url = models.URLField(default="")
 
     def __str__(self):
         return f"{self.blockchain}"
