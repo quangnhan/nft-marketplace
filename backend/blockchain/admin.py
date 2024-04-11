@@ -3,7 +3,6 @@ from .models import SmartContract, NFT
 
 class SmartContractAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'blockchain', 'network', 'address')
-    readonly_fields = ['name']
 
 class NFTAdmin(admin.ModelAdmin):
     list_display = ('token_id', 'contract', 'owner', 'image_url')

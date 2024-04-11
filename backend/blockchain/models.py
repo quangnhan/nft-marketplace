@@ -22,7 +22,7 @@ class SmartContract(models.Model):
 
     def clean(self):
         super().clean()
-        self.validate_abi()
+        # self.validate_abi()
         self.validate_chain_and_network()
 
     def validate_abi(self):
@@ -39,6 +39,7 @@ class SmartContract(models.Model):
 
         # Get contract name and save to database
         contract_name = chain.get_contract_name(self.address, self.abi)
+        print("validate_chain_and_network", contract_name)
         if contract_name:
             self.name = contract_name
         

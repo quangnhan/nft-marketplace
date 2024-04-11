@@ -7,3 +7,4 @@ python-dotenv
 djangorestframework
 djangorestframework-simplejwt
 djangorestframework-simplejwt[crypto]
+django-cors-headers
