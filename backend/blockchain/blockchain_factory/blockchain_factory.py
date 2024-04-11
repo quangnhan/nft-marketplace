@@ -2,7 +2,7 @@ from .ethereum import Ethereum
 from blockchain.blockchain_factory.enums.blockchain import Blockchain
 from blockchain.blockchain_factory.enums.network import Network
 
-class ChainFactory:
+class BlockchainFactory:
     @staticmethod
     def create(chain_name: str, network: str):
         chain_name_enum = getattr(Blockchain, chain_name)

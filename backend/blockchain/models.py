@@ -1,7 +1,7 @@
 import json
 from django.db import models
 from django.core.exceptions import ValidationError
-from blockchain.blockchain_factory.chain_factory import ChainFactory
+from blockchain.blockchain_factory.blockchain_factory import BlockchainFactory
 from blockchain.blockchain_factory.enums.blockchain import Blockchain
 from blockchain.blockchain_factory.enums.network import Network
 
@@ -33,7 +33,7 @@ class SmartContract(models.Model):
 
     def validate_chain_and_network(self):
         try:
-            chain = ChainFactory.create(self.blockchain, self.network)
+            chain = BlockchainFactory.create(self.blockchain, self.network)
         except Exception as e:
             raise ValidationError(f"Failed to create chain instance: {e}")
 
