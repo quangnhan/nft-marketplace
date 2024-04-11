@@ -43,11 +43,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #3rd party
+    'rest_framework',
+    'rest_framework_simplejwt',
     'django_celery_results',
     'django_celery_beat',
     
     #app
+    'api',
     'blockchain',
+    'user'
 ]
 
 MIDDLEWARE = [
@@ -127,6 +131,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+AUTH_USER_MODEL = 'user.User'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -153,5 +160,14 @@ DJANGO_CELERY_RESULTS = {
 # Celery settings
 CELERY_BROKER_URL = f'amqp://{RABBITMQ_USERNAME}:{RABBITMQ_PASSWORD}@{RABBITMQ_HOST}:{RABBITMQ_PORT}/'
 
-# Static root
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Django rest framework
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
+
+LOGIN_URL = '/admin/login/'

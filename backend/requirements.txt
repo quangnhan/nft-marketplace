@@ -4,3 +4,6 @@ celery
 django-celery-beat
 django-celery-results
 python-dotenv
+djangorestframework
+djangorestframework-simplejwt
+djangorestframework-simplejwt[crypto]
