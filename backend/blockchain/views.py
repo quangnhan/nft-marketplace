@@ -1,10 +1,13 @@
-import json
 import os
 from dotenv import load_dotenv
 from web3 import Web3
-from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import HttpResponse, get_object_or_404
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views.generic.detail import DetailView
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from .forms import SmartContractDownloadForm
 from .models import SmartContract, NFT
 
 load_dotenv()
@@ -71,3 +74,51 @@ def save_nft_owner(request):
         return HttpResponse("NFT data saved successfully.")
     except Exception as e:
         return HttpResponse(f"An error occurred: {str(e)}", status=500)
+
+class SmarContractDownloadView(PermissionRequiredMixin, DetailView):
+    permission_required = "blockchain.view_smartcontract"
+    template_name = "admin/blockchain/smartcontract/download.html"
+    model = SmartContract
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = SmartContractDownloadForm()
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        form = SmartContractDownloadForm(request.POST)
+        if form.is_valid():
+            from_token_id = form.cleaned_data['from_token_id']
+            to_token_id = form.cleaned_data['to_token_id']
+
+            # Handle download logic here
+            smart_contract = self.get_object()
+        
+            # Initialize Web3
+            http_provider = os.environ.get('BLOCKCHAIN_HTTP_PROVIDER')
+            w3 = Web3(Web3.HTTPProvider(http_provider))
+            
+            # Retrieve the contract instance
+            contract = w3.eth.contract(address=smart_contract.address, abi=smart_contract.abi) # type: ignore
+
+            for token_id in range(from_token_id, to_token_id):
+                # Call the Ethereum contract function to get NFT owner
+                owner = contract.functions.ownerOf(token_id).call()
+
+                # Get existing NFT or create a new one if it doesn't exist
+                nft, created = NFT.objects.get_or_create(
+                    smart_contract=smart_contract,
+                    token_id=token_id,
+                    defaults={'owner': owner}
+                )
+                print(f"Token id: {token_id} - Owner: {owner}")
+
+                # If the NFT already exists, update the owner
+                if not created:
+                    nft.owner = owner
+                    nft.save()
+
+            # Return HTTP response for file download
+            return redirect(reverse_lazy('admin:blockchain_smartcontract_changelist'))
+        else:
+            return render(request, self.template_name, {'form': form})

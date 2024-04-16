@@ -18,7 +18,7 @@ class SmartContract(models.Model):
     image_url = models.URLField(default="")
 
     def __str__(self):
-        return f"{self.blockchain}"
+        return f"{self.blockchain} - {self.network} - {self.name} - {self.address}"
 
     def clean(self):
         super().clean()
