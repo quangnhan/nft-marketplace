@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from blockchain.blockchain_factory.enums.blockchain import Blockchain
-from blockchain.blockchain_factory.enums.network import Network
+from blockchain.blockchain_factory.enums.network import NetworkType
 
 class BaseBlockchain(ABC):
-    def __init__(self, name: Blockchain, network: Network):
+    def __init__(self, name: Blockchain, network: NetworkType, rpc_server: str):
         self.name = name
         self.network = network
+        self.rpc_server = rpc_server
 
     @abstractmethod
     def get_block_number() -> int:

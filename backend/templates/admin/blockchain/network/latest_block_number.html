@@ -1,0 +1,23 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+
+    <h1>Latest Block Number</h1>
+    <p>Blockchain: {{object.blockchain}}</p>
+    <p>Network: {{object.network}}</p>
+    <p>RPC server: {{object.rpc_server}}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="button">Get latest block number</button>
+    </form>
+
+    {% if latest_block_number %}
+        <p>Latest Block Number: {{ latest_block_number }}</p>
+    {% endif %}
+
+    {% if error_message %}
+        <p>Error: {{ error_message }}</p>
+    {% endif %}
+
+{% endblock %}

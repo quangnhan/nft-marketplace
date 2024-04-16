@@ -1,5 +1,5 @@
 import os
-from dotenv import load_dotenv
+from typing import cast
 from web3 import Web3
 from django.http import HttpResponse
 from django.shortcuts import HttpResponse, get_object_or_404
@@ -7,22 +7,28 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic.detail import DetailView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+
+from blockchain import blockchain_factory
+from blockchain.blockchain_factory.blockchain_factory import BlockchainFactory
+from blockchain.blockchain_factory.enums.blockchain import Blockchain
 from .forms import SmartContractDownloadForm
-from .models import SmartContract, NFT
+from .models import Network, SmartContract, NFT
 
-load_dotenv()
+class NetworkLatestBlockNumberView(PermissionRequiredMixin, DetailView):
+    permission_required = "blockchain.view_network"
+    template_name = "admin/blockchain/network/latest_block_number.html"
+    model = Network
 
-def get_latest_block_number(request):
-    http_provider = os.environ.get('BLOCKCHAIN_HTTP_PROVIDER')
-    w3 = Web3(Web3.HTTPProvider(http_provider))
-
-    if not w3.is_connected():
-        return HttpResponse("Failed to connect to the HTTP provider!")
-
-    latest_block_number = w3.eth.block_number
-
-    return HttpResponse(f"Latest Block Number: {latest_block_number}")
-
+    def post(self, request, *args, **kwargs):
+        network = cast(Network, self.get_object())
+        try:
+            blockchain_factory = BlockchainFactory.create(network.blockchain, network.network, network.rpc_server)
+            latest_block_number = blockchain_factory.get_block_number()
+            return render(request, self.template_name, {'latest_block_number': latest_block_number, 'object': network})
+        except Exception as e:
+            error_message = f"Failed to retrieve latest block number: {str(e)}"
+            return render(request, self.template_name, {'error_message': error_message})
+        
 def save_nft_owner(request):
     try:
         # Get data
