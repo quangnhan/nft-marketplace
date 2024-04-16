@@ -1,23 +1,25 @@
 {% extends 'admin/base_site.html' %}
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+        &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+        &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+        &rsaquo; {{ object }}
+    </div>
+{% endblock %}
 
 {% block content %}
 
     <h1>Latest Block Number</h1>
-    <p>Blockchain: {{object.blockchain}}</p>
-    <p>Network: {{object.network}}</p>
+    <p>Network Name: {{object.network_name}}</p>
+    <p>Network Type: {{object.network_type}}</p>
     <p>RPC server: {{object.rpc_server}}</p>
 
     <form method="post">
         {% csrf_token %}
         <button type="submit" class="button">Get latest block number</button>
     </form>
-
-    {% if latest_block_number %}
-        <p>Latest Block Number: {{ latest_block_number }}</p>
-    {% endif %}
-
-    {% if error_message %}
-        <p>Error: {{ error_message }}</p>
-    {% endif %}
 
 {% endblock %}

@@ -5,7 +5,7 @@ from .views import SmarContractDownloadView, NetworkLatestBlockNumberView
 from .models import Network, SmartContract, NFT
 
 class NetworkAdmin(admin.ModelAdmin):
-    list_display = ('blockchain', 'network', 'rpc_server', 'latest_block_number')
+    list_display = ('network_name', 'network_type', 'rpc_server', 'latest_block_number')
 
     def get_urls(self):
         return [

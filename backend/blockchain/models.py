@@ -1,20 +1,20 @@
 import json
 from django.db import models
 from django.core.exceptions import ValidationError
-from blockchain.blockchain_factory.enums.blockchain import Blockchain
-from blockchain.blockchain_factory.enums.network import NetworkType
+from blockchain.network_factory.enums.network_name import NetworkName
+from blockchain.network_factory.enums.network_type import NetworkType
 
 class Network(models.Model):
-    BLOCKCHAIN_CHOICES = [(choice.name, choice.value) for choice in Blockchain]
-    NETWORK_CHOICES = [(choice.name, choice.value) for choice in NetworkType]
+    NETWORK_NAME_CHOICES = [(choice.name, choice.value) for choice in NetworkName]
+    NETWORK_TYPE_CHOICES = [(choice.name, choice.value) for choice in NetworkType]
 
-    blockchain = models.CharField(max_length=50, choices=BLOCKCHAIN_CHOICES, default=Blockchain.ETHEREUM.value)
-    network = models.CharField(max_length=50, choices=NETWORK_CHOICES, default=NetworkType.MAINNET.value)
+    network_name = models.CharField(max_length=50, choices=NETWORK_NAME_CHOICES, default=NetworkName.ETHEREUM.value)
+    network_type = models.CharField(max_length=50, choices=NETWORK_TYPE_CHOICES, default=NetworkType.MAINNET.value)
     rpc_server = models.URLField()
     image_url = models.URLField(blank=True, default="")
 
     def __str__(self) -> str:
-        return f"{self.blockchain} {self.network}"
+        return f"{self.network_name} {self.network_type}"
 
 class SmartContract(models.Model):
     network = models.ForeignKey(Network, on_delete=models.CASCADE)

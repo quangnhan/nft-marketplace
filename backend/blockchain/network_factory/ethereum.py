@@ -1,10 +1,10 @@
 from web3 import Web3
-from blockchain.blockchain_factory.enums.blockchain import Blockchain
-from .base_blockchain import BaseBlockchain, NetworkType
+from blockchain.network_factory.enums.network_name import NetworkName
+from .base_network import BaseNetwork, NetworkType
 
-class Ethereum(BaseBlockchain):
-    def __init__(self, name: Blockchain, network: NetworkType, rpc_server: str):
-        super().__init__(name, network, rpc_server)
+class Ethereum(BaseNetwork):
+    def __init__(self, network_name: NetworkName, rpc_server: str):
+        super().__init__(network_name, rpc_server)
         self.w3 = Web3(Web3.HTTPProvider(rpc_server))
 
     def get_block_number(self) -> int:

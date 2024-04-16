@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
-from blockchain.blockchain_factory.enums.blockchain import Blockchain
-from blockchain.blockchain_factory.enums.network import NetworkType
+from blockchain.network_factory.enums.network_name import NetworkName
+from blockchain.network_factory.enums.network_type import NetworkType
 
-class BaseBlockchain(ABC):
-    def __init__(self, name: Blockchain, network: NetworkType, rpc_server: str):
-        self.name = name
-        self.network = network
+class BaseNetwork(ABC):
+    def __init__(self, network_name: NetworkName, rpc_server: str):
+        self.network_name = network_name
         self.rpc_server = rpc_server
 
     @abstractmethod

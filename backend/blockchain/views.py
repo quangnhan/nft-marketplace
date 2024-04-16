@@ -4,13 +4,14 @@ from web3 import Web3
 from django.http import HttpResponse
 from django.shortcuts import HttpResponse, get_object_or_404
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib import messages
 from django.views.generic.detail import DetailView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.contrib import admin
 
-from blockchain import blockchain_factory
-from blockchain.blockchain_factory.blockchain_factory import BlockchainFactory
-from blockchain.blockchain_factory.enums.blockchain import Blockchain
+from blockchain.network_factory.network_factory import NetworkFactory
+from blockchain.network_factory.enums.network_name import NetworkName
 from .forms import SmartContractDownloadForm
 from .models import Network, SmartContract, NFT
 
@@ -19,15 +20,26 @@ class NetworkLatestBlockNumberView(PermissionRequiredMixin, DetailView):
     template_name = "admin/blockchain/network/latest_block_number.html"
     model = Network
 
+    def get_context_data(self, **kwargs):
+        return {
+            **super().get_context_data(**kwargs),
+            **admin.site.each_context(self.request),
+            "opts": self.model._meta,
+        }
+    
     def post(self, request, *args, **kwargs):
         network = cast(Network, self.get_object())
         try:
-            blockchain_factory = BlockchainFactory.create(network.blockchain, network.network, network.rpc_server)
+            blockchain_factory = NetworkFactory.create(network.network_name, network.rpc_server)
             latest_block_number = blockchain_factory.get_block_number()
-            return render(request, self.template_name, {'latest_block_number': latest_block_number, 'object': network})
+            messages.success(request, f"Latest block number: {latest_block_number}")
+            # Redirect with latest block number
+            return redirect(request.path)
         except Exception as e:
             error_message = f"Failed to retrieve latest block number: {str(e)}"
-            return render(request, self.template_name, {'error_message': error_message})
+            messages.error(request, error_message)
+            # Redirect to the current URL with an error message as a query parameter
+            return redirect(request.path)
         
 def save_nft_owner(request):
     try:
