@@ -2,7 +2,7 @@ import os
 import json
 from web3 import Web3
 
-w3 = Web3(Web3.HTTPProvider('https://eth.drpc.org'))
+w3 = Web3(Web3.HTTPProvider('https://rpc.payload.de'))
 
 contract_address = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"
 current_directory = os.path.dirname(os.path.abspath(__file__))

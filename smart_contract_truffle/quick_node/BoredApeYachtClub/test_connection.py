@@ -1,6 +1,7 @@
 from web3 import Web3
 
-w3 = Web3(Web3.HTTPProvider("https://silent-powerful-sunset.quiknode.pro/1b4b2ca8e8106b992d01400a71e0ba35810091e2/"))
+w3 = Web3(Web3.HTTPProvider("https://silent-powerful-sunset.quiknode.pro/1b4b2ca8e8106b992d01400a71e0ba35810091e2"))
+# w3 = Web3(Web3.HTTPProvider("https://rpc.payload.de/"))
 
 if not w3.is_connected():
   print("Failed to connect to the HTTP provider!")
