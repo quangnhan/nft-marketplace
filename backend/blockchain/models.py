@@ -1,6 +1,4 @@
-import json
 from django.db import models
-from django.core.exceptions import ValidationError
 from blockchain.network_factory.enums.network_name import NetworkName
 from blockchain.network_factory.enums.network_type import NetworkType
 
@@ -14,33 +12,24 @@ class Network(models.Model):
     image_url = models.URLField(blank=True, default="")
 
     def __str__(self) -> str:
-        return f"{self.network_name} {self.network_type}"
+        return f"[{self.network_name} {self.network_type}]"
 
 class SmartContract(models.Model):
     network = models.ForeignKey(Network, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50, default='')
-    token_symbol = models.CharField(max_length=50, default='')
+    name = models.CharField(max_length=50, default='', blank=True)
+    token_symbol = models.CharField(max_length=50, default='', blank=True)
     address = models.CharField(max_length=50, unique=True)
     abi = models.JSONField()
-    image_url = models.URLField(default="")
+    image_url = models.URLField(default="", blank=True)
 
     def __str__(self):
-        return f"{self.network} - {self.name} - {self.address}"
-
-    def clean(self):
-        super().clean()
-        # self.validate_abi()
-
-    def validate_abi(self):
-        try:
-            json.loads(self.abi)
-        except json.JSONDecodeError as e:
-            raise ValidationError("ABI field must be a valid JSON string.")
+        return f"[{self.network} {self.name}]"
         
 class NFT(models.Model):
     smart_contract = models.ForeignKey(SmartContract, on_delete=models.CASCADE)
     owner = models.CharField(max_length=50)
     token_id = models.CharField(max_length=10)
+    uri = models.URLField(default="")
     image_url = models.URLField(default="")
 
     class Meta:
@@ -48,6 +37,6 @@ class NFT(models.Model):
 
     def __str__(self):
         if self.smart_contract.name:
-            return f"Contract: {self.smart_contract.name} - Token ID: {self.token_id}"
+            return f"[{self.smart_contract.name}: TokenID {self.token_id}]"
         else:
-            return f"Contract: {self.smart_contract.address} - Token ID: {self.token_id}"
+            return f"[{self.smart_contract.address}: TokenID {self.token_id}]"
