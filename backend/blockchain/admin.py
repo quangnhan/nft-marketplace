@@ -5,24 +5,24 @@ from .views import SmarContractDownloadView, NetworkLatestBlockNumberView
 from .models import Network, SmartContract, NFT
 
 class NetworkAdmin(admin.ModelAdmin):
-    list_display = ('network_name', 'network_type', 'rpc_server', 'latest_block_number')
+    list_display = ('network_name', 'network_type', 'rpc_server', 'action')
 
     def get_urls(self):
         return [
             path(
                 "<pk>/latest_block",
                 self.admin_site.admin_view(NetworkLatestBlockNumberView.as_view()),
-                name=f"network_latest_block",
+                name=f"network_check_connection",
             ),
             *super().get_urls(),
         ]
 
-    def latest_block_number(self, obj: Network) -> str:
-        url = reverse("admin:network_latest_block", args=[obj.pk])
-        return format_html(f'<a href="{url}">Latest Block Number</a>')
+    def action(self, obj: Network) -> str:
+        url = reverse("admin:network_check_connection", args=[obj.pk])
+        return format_html(f'<a href="{url}" class="button">Check connection</a>')
     
 class SmartContractAdmin(admin.ModelAdmin):
-    list_display = ('network', 'name', 'address', 'download')
+    list_display = ('network', 'name', 'token_symbol', 'address', 'action')
 
     def get_urls(self):
         return [
@@ -34,18 +34,19 @@ class SmartContractAdmin(admin.ModelAdmin):
             *super().get_urls(),
         ]
 
-    def download(self, obj: SmartContract) -> str:
+    def action(self, obj: SmartContract) -> str:
         url = reverse("admin:smart_contract_download", args=[obj.pk])
-        return format_html(f'<a href="{url}">Download</a>')
+        return format_html(f'<a href="{url}" class="button">Download NFT</a>')
 
 class NFTAdmin(admin.ModelAdmin):
-    list_display = ('token_id', 'contract', 'owner', 'image_url')
+    list_display = ('network', 'contract', 'token_id', 'owner')
+    list_filter = ('smart_contract__network', 'smart_contract__name', )
 
     def contract(self, obj):
-        if obj.smart_contract.name:
-            return obj.smart_contract.name
-        else:
-            obj.smart_contract.address
+        return obj.smart_contract.name
+    
+    def network(self, obj):
+        return obj.smart_contract.network
 
 # Register your models with the admin site
 admin.site.register(Network, NetworkAdmin)
