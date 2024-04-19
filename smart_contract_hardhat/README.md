@@ -10,5 +10,14 @@ npx hardhat test
 npx hardhat compile
 REPORT_GAS=true npx hardhat test
 npx hardhat node
+
+# Set env
+npx hardhat vars set INFURA_API_KEY
+npx hardhat vars set SEPOLIA_PRIVATE_KEY
+
+npx hardhat vars get INFURA_API_KEY
+npx hardhat vars list
+# Deploy
 npx hardhat ignition deploy ./ignition/modules/NFT.js --network localhost
+npx hardhat ignition deploy ./ignition/modules/NFT.js --network sepolia
 ```
