@@ -9,7 +9,6 @@ class Network(models.Model):
     network_name = models.CharField(max_length=50, choices=NETWORK_NAME_CHOICES, default=NetworkName.ETHEREUM.value)
     network_type = models.CharField(max_length=50, choices=NETWORK_TYPE_CHOICES, default=NetworkType.MAINNET.value)
     rpc_server = models.URLField()
-    image_url = models.URLField(blank=True, default="")
 
     def __str__(self) -> str:
         return f"[{self.network_name} {self.network_type}]"
@@ -20,7 +19,6 @@ class SmartContract(models.Model):
     token_symbol = models.CharField(max_length=50, default='', blank=True)
     address = models.CharField(max_length=50, unique=True)
     abi = models.JSONField()
-    image_url = models.URLField(default="", blank=True)
 
     def __str__(self):
         return f"[{self.network} {self.name}]"
@@ -30,7 +28,6 @@ class NFT(models.Model):
     owner = models.CharField(max_length=50)
     token_id = models.CharField(max_length=10)
     uri = models.URLField(default="")
-    image_url = models.URLField(default="")
 
     class Meta:
         unique_together = (("smart_contract", "token_id"),)
