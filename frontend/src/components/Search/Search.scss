@@ -1,0 +1,6 @@
+.bg-search {
+    background-color: #fff3;
+    &.text-color {
+        background-color: var(--bg-search);
+    }
+}

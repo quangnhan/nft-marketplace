@@ -1,13 +1,106 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import "~primereact/resources/themes/saga-blue/theme.css";
+@import "~primereact/resources/primereact.min.css";
+
+@import 'swiper/css';
+@import 'swiper/css/navigation';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+body[data-theme="light"] {
+  --main-color: #fff;
+  --text-color: #121212;
+  --title-color: #000;
+  --bg-search: #1212120a;
+  --hover-color: #12121214;
+  --bg-footer: #1868b7;
+  --btn-bg: #2081E2;
+  --bg-card: #fff;
+  --bg-primary: #fff;
+  --bg-button: #ccc;
+
+  --body-bg: white;
+  --menu-bg-color: #eee;
+  --toggle-color: #000;
+  --title-bg: rgba(30, 37, 48, 0.07);
+  --title-btn: #000;
+  --nav-bg-color: #eee;
+}
+
+body[data-theme="dark"] {
+  --main-color: #000;
+  --text-color: #fff;
+  --title-color: #fff;
+  --bg-search: #fff3;
+  --bg-footer: #252525;
+  --btn-bg: #1f2937;
+  --bg-card: #252525;
+  --bg-primary: #000;
+  --bg-button: #ffffff3d;
+
+  --body-bg: #1f2937;
+  --menu-bg-color: #2b2a2a;
+  --toggle-color: #252525;
+  --title-bg: hsla(0, 0%, 100%, 0.07);
+  --title-btn: #fff;
+  --nav-bg-color: #2b2a2a;
+}
+
+.bg-header {
+  background-color: var(--main-color);
+}
+
+.title-color {
+  color: var(--title-color);
+}
+
+.text-color {
+  color: var(--text-color);
+}
+
+.bg-color {
+  background-color: var(--bg-search);
+  &:hover {
+    background-color: var(--hover-color);
+  }
+}
+
+.bg-footer {
+  background-color: var(--bg-footer);
+}
+
+.btn-bg {
+  background-color: var(--btn-bg);
+}
+
+.bg-card {
+  background-color: var(--bg-card);
+}
+
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-button-hover:hover {
+  background-color: var(--bg-button);
+}
+
+.bg-button {
+  background-color: var(--bg-button);
 }
