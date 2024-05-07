@@ -1,32 +1,28 @@
-import './App.css';
-import { BrowserRouter } from "react-router-dom";
-import { Layout } from "antd";
-import Router from './router/Router';
-import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
-
-const { Content, Sider } = Layout;
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./App.css";
+import { publicRoutes } from "./routes";
+import DefaultLayout from "./layouts/DefaultLayout";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Layout style={{ minHeight: "100vh" }}>
-        <Header/>
-        <Layout>
-          <Content>
-            <div
-              style={{
-                padding: 16,
-                height: "100%",
-              }}
-            >
-              <Router />
-            </div>
-          </Content>
-        </Layout>
-        <Footer/>
-      </Layout>
-    </BrowserRouter>
+    <Router>
+      <div className="App">
+        <Routes>
+          {publicRoutes.map((route, index) => {
+            return (
+              <Route
+                key={index}
+                path={route.path}
+                element={<DefaultLayout>{route.element}</DefaultLayout>}
+              />
+            );
+          })}
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
