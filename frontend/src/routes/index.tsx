@@ -4,9 +4,6 @@ import CollectionsPage from "../pages/CollectionsPage";
 // Public Routes
 const publicRoutes = [
     { path: "/", element: <HomePage /> },
-    { path: "/drops", element: <HomePage /> },
-    { path: "/stats", element: <HomePage /> },
-    { path: "/create", element: <HomePage /> },
     { path: "/collections", element: <CollectionsPage /> },
     // { path: "/races", element: <Races /> },
     // { path: "/race-result/:year/:grandPrix", element: <RaceResult /> },

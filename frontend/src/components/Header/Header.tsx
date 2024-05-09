@@ -13,6 +13,7 @@ import { MdOutlineWallet } from "react-icons/md";
 import { PiArrowRight } from "react-icons/pi";
 import { AiOutlineClose } from "react-icons/ai";
 import UserButton from "./UserButton";
+import ConnectButton from "./ConnectButton";
 
 const Header = () => {
   const [isShowConnect, setIsShowConnect] = useState(false);
@@ -62,15 +63,15 @@ const Header = () => {
             scrollPosition > 0 ? "text-color" : "text-white"
           }`}
         >
-          <NavDropdown title="Drops" link="/drops">
+          {/* <NavDropdown title="Drops" link="/drops">
             <NavItem title="Featured" link="/featured" />
             <NavItem title="Learn more" link="/learn-more" />
           </NavDropdown>
           <NavDropdown title="Stats" link="/stats">
             <NavItem title="Ranking" link="/ranking" />
             <NavItem title="Activity" link="/activity" />
-          </NavDropdown>
-          <NavDropdown title="Create" link="/create" />
+          </NavDropdown> */}
+          <NavDropdown title="Collection" link="/collections" />
         </nav>
       </div>
       <Search
@@ -88,6 +89,7 @@ const Header = () => {
           <p className={`text-base font-semibold ${
             scrollPosition > 0 ? "text-color" : "text-white"}`}>Login</p>
         </button>
+        <ConnectButton/>
         <UserButton scrollPosition={scrollPosition} onClick={toggleConnect} />
         <CardButton scrollPosition={scrollPosition}/>
       </div>
