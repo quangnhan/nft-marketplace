@@ -3,6 +3,7 @@ import Card from "../components/Card";
 import Slider from "../components/Slider";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
+import { Link } from "react-router-dom";
 
 const HomePage: React.FC = () => {
   const [numCard, setNumCard] = useState(5);
@@ -31,7 +32,7 @@ const HomePage: React.FC = () => {
   }, []);
   return (
     <div className="bg-primary font-inter py-10">
-      <Slider/>
+      <Slider />
       <div className="mt-8 px-8">
         <h3 className="text-color text-xl font-bold text-left">
           Notable collections
@@ -47,12 +48,14 @@ const HomePage: React.FC = () => {
           className="card-swiper py-4"
         >
           <SwiperSlide>
-            <Card
-              verified
-              title="Parallel Alpha [Base]"
-              floor={0.5}
-              volume={0.15}
-            />
+            <Link to="/detail">
+              <Card
+                verified
+                title="Parallel Alpha [Base]"
+                floor={0.5}
+                volume={0.15}
+              />
+            </Link>
           </SwiperSlide>
           <SwiperSlide>
             <Card

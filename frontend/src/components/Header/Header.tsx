@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Header.scss";
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/Logo Minty (1).png";
 import metaMask from "../../assets/images/meta-mask.png";
 import coinBase from "../../assets/images/walletlink-alternative.webp";
 import walletConnect from "../../assets/images/walletconnect-alternative.webp";
@@ -53,7 +53,7 @@ const Header = () => {
               scrollPosition > 0 ? "title-color" : "text-white"
             }`}
           >
-            OpenSea
+            NFT Marketplace
           </h4>
         </Link>
         <div className="h-8 w-[1px] mx-6 bg-white bg-opacity-20"></div>
@@ -111,7 +111,7 @@ const Header = () => {
               className="w-[100px] h-[100px] rounded-full mt-[52px] mb-6"
             />
             <p className="text-2xl font-semibold text-primary mb-6">
-              Connect to OpenSea
+              Connect to NFT Marketplace
             </p>
             <div className="h-[52px] rounded-lg bg-white px-3 flex items-center w-full shadow-lg mb-4">
               <input
